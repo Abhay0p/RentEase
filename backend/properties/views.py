@@ -35,6 +35,14 @@ class PropertyViewSet(viewsets.ModelViewSet):
                 Q(title__icontains=search_query) | 
                 Q(address__icontains=search_query)
             )
+            
+        # Sort by title or address
+        sort_by = self.request.query_params.get('sort', None)
+        if sort_by == 'title':
+            queryset = queryset.order_by('title')
+        elif sort_by == 'address':
+            queryset = queryset.order_by('address')
+            
         return queryset
 
     def perform_create(self, serializer):

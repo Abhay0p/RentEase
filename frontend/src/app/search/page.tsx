@@ -26,6 +26,7 @@ export default function SearchPage() {
   const [location, setLocation] = useState("");
   const [debouncedLocation, setDebouncedLocation] = useState("");
   const [propertyType, setPropertyType] = useState<string>("ALL");
+  const [sortOrder, setSortOrder] = useState<string>("newest");
   const [center, setCenter] = useState<[number, number]>([37.7749, -122.4194]); // Default map center
   const [zoom, setZoom] = useState(12);
 
@@ -44,6 +45,7 @@ export default function SearchPage() {
         let queryParams = [];
         if (debouncedLocation) queryParams.push(`search=${encodeURIComponent(debouncedLocation)}`);
         if (propertyType !== "ALL") queryParams.push(`type=${propertyType}`);
+        if (sortOrder !== "newest") queryParams.push(`sort=${sortOrder}`);
         
         const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : "";
         const res = await api.get(`/properties/${queryString}`);
@@ -68,7 +70,7 @@ export default function SearchPage() {
     };
 
     fetchProperties();
-  }, [debouncedLocation, propertyType]);
+  }, [debouncedLocation, propertyType, sortOrder]);
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden">
@@ -93,9 +95,16 @@ export default function SearchPage() {
                   onChange={(e) => setLocation(e.target.value)}
                 />
               </div>
-              <PremiumButton variant="outline" size="icon" className="shrink-0 h-12 w-12 rounded-xl">
-                <SlidersHorizontal className="h-5 w-5" />
-              </PremiumButton>
+              <select 
+                className="shrink-0 h-12 px-4 rounded-xl bg-background border border-border/40 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-accent cursor-pointer appearance-none shadow-sm hover:border-accent/50 transition-colors"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+                style={{ backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23D4B483%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
+              >
+                <option value="newest">Newest First</option>
+                <option value="title">Sort by Hotel Name</option>
+                <option value="address">Sort by City Name</option>
+              </select>
             </div>
             
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
