@@ -69,7 +69,8 @@ class PasswordResetView(APIView):
                 print("="*60 + "\n")
                 
             return Response({
-                'detail': 'Password reset link sent to your email.'
+                'detail': 'Password reset link generated.',
+                'dev_reset_link': reset_link
             }, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({'detail': 'Password reset link sent to your email.'}, status=status.HTTP_200_OK)
