@@ -36,8 +36,8 @@ export default function SettingsPage() {
     setSuccess(false);
 
     try {
-      // Assuming PUT /users/me/ updates the profile.
-      await api.put("/users/me/", {
+      // Use PATCH to allow partial updates (password is not provided)
+      await api.patch("/users/me/", {
         first_name: formData.first_name,
         last_name: formData.last_name,
         role: formData.role,

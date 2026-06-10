@@ -18,8 +18,6 @@ export function StarCursor() {
 
   useEffect(() => {
     setIsMounted(true);
-    // We only want this to run on devices that support hover/mouse
-    if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });

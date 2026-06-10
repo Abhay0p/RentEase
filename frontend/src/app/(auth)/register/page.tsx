@@ -40,7 +40,11 @@ export default function RegisterPage() {
     try {
       setError(null);
       // Register
-      await api.post("/auth/register/", data);
+      const payload = {
+        ...data,
+        role: data.is_host ? "LANDLORD" : "GUEST"
+      };
+      await api.post("/auth/register/", payload);
       
       // Auto login after register
       const res = await api.post("/auth/login/", { email: data.email, password: data.password });
