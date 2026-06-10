@@ -49,10 +49,15 @@ export default function SearchPage() {
         const res = await api.get(`/properties/${queryString}`);
         setProperties(res.data);
         
-        // Find the first property that actually has valid coordinates to center the map
-        const firstValidProperty = res.data.find((p: any) => p.latitude != null && p.longitude != null);
+        // Find the first property that actually has valid numeric coordinates
+        const firstValidProperty = res.data.find((p: any) => {
+          const lat = parseFloat(p.latitude);
+          const lng = parseFloat(p.longitude);
+          return !isNaN(lat) && !isNaN(lng);
+        });
+        
         if (firstValidProperty) {
-          setCenter([firstValidProperty.latitude, firstValidProperty.longitude]);
+          setCenter([parseFloat(firstValidProperty.latitude), parseFloat(firstValidProperty.longitude)]);
           setZoom(13);
         }
       } catch (err) {

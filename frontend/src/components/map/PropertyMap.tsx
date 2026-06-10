@@ -50,8 +50,12 @@ export default function PropertyMap({ properties, center, zoom }: PropertyMapPro
     });
   };
 
-  // Only render markers for properties that actually have coordinates!
-  const validProperties = properties.filter(p => p.latitude != null && p.longitude != null);
+  // Only render markers for properties that actually have valid numeric coordinates!
+  const validProperties = properties.filter(p => {
+    const lat = parseFloat(p.latitude);
+    const lng = parseFloat(p.longitude);
+    return !isNaN(lat) && !isNaN(lng);
+  });
 
   return (
     <MapContainer
@@ -70,7 +74,7 @@ export default function PropertyMap({ properties, center, zoom }: PropertyMapPro
       {validProperties.map((property) => (
         <Marker 
           key={property.id} 
-          position={[property.latitude, property.longitude]}
+          position={[parseFloat(property.latitude), parseFloat(property.longitude)]}
           icon={createCustomIcon(Math.round(property.price_per_night || 0).toString())}
         >
           <Popup className="luxury-popup">
