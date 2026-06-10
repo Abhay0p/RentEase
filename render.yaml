@@ -3,6 +3,7 @@ services:
     name: rentease-backend
     env: python
     region: oregon
+    rootDir: backend
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
     startCommand: "daphne -b 0.0.0.0 -p $PORT core.asgi:application"
     envVars:
