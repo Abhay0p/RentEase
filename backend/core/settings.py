@@ -151,7 +151,7 @@ if env('EMAIL_HOST_PASSWORD', default=''):
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='abhaydubey.genaibu@gmail.com')
+    EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='Abhaynarayan0001@gmail.com')
     EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
