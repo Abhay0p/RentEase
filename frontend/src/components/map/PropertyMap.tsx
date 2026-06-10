@@ -9,7 +9,11 @@ import { Gem } from "lucide-react";
 function ChangeView({ center, zoom }: { center: [number, number]; zoom: number }) {
   const map = useMap();
   useEffect(() => {
-    map.flyTo(center, zoom, { duration: 1.5, easeLinearity: 0.25 });
+    if (center && typeof center[0] === 'number' && !isNaN(center[0])) {
+      // Use setView instead of flyTo. flyTo can crash with NaN if the map container 
+      // dimensions are still computing during React's mount cycle.
+      map.setView(center, zoom);
+    }
   }, [center, zoom, map]);
   return null;
 }
