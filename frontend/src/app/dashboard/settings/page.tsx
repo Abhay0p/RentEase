@@ -16,7 +16,7 @@ export default function SettingsPage() {
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
-    role: "GUEST",
+    role: "TENANT",
   });
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function SettingsPage() {
       setFormData({
         first_name: user.first_name || "",
         last_name: user.last_name || "",
-        role: user.role || "GUEST",
+        role: user.role || "TENANT",
       });
     }
   }, [user]);
@@ -36,12 +36,11 @@ export default function SettingsPage() {
     setSuccess(false);
 
     try {
-      // Use PATCH to allow partial updates (password is not provided)
+      // Use PATCH to allow partial updates. Do NOT send email to avoid UniqueValidator errors.
       await api.patch("/users/me/", {
         first_name: formData.first_name,
         last_name: formData.last_name,
         role: formData.role,
-        email: user?.email // usually email is read-only but sending it to satisfy serializers
       });
       
       // Update local zustand store
@@ -142,7 +141,7 @@ export default function SettingsPage() {
               onChange={(e) => setFormData({...formData, role: e.target.value})}
               className="w-full bg-secondary/50 border border-border focus:border-accent rounded-xl px-4 py-4 text-base outline-none transition-colors appearance-none"
             >
-              <option value="GUEST">Guest (Traveler)</option>
+              <option value="TENANT">Guest (Traveler)</option>
               <option value="LANDLORD">Landlord (Host)</option>
             </select>
             <p className="text-xs text-muted-foreground mt-1">Upgrade your account to Landlord to start hosting properties.</p>
