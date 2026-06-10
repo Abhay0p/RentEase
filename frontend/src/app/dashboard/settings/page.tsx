@@ -37,7 +37,7 @@ export default function SettingsPage() {
 
     try {
       // Use PATCH to allow partial updates. Do NOT send email to avoid UniqueValidator errors.
-      await api.patch("/users/me/", {
+      await api.patch("/auth/me/", {
         first_name: formData.first_name,
         last_name: formData.last_name,
         role: formData.role,
