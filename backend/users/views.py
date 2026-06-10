@@ -56,12 +56,17 @@ class PasswordResetView(APIView):
                     f'Hello {user.first_name},\n\nWe received a request to reset your password. '
                     f'Click the link below to set a new password:\n\n{reset_link}\n\n'
                     'If you did not request this, please ignore this email.',
-                    'concierge@rentease.com',
+                    f'RentEase Concierge <{settings.EMAIL_HOST_USER}>',
                     [email],
                     fail_silently=False,
                 )
+                print(f"\n✅ SUCCESS: Password reset email was accepted by Gmail and sent to {email}\n")
             except Exception as e:
-                print(f"Failed to send email: {e}")
+                print("\n" + "="*60)
+                print(f"❌ FAILED TO SEND EMAIL: {e}")
+                print("Google rejected the login. Please check your EMAIL_HOST_PASSWORD.")
+                print(f"🔗 TEMPORARY RESET LINK: {reset_link}")
+                print("="*60 + "\n")
                 
             return Response({
                 'detail': 'Password reset link sent to your email.'
