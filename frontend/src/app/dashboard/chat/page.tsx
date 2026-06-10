@@ -58,15 +58,19 @@ function ChatClient() {
     const token = localStorage.getItem("access_token");
     if (!token) return;
 
+    let isActive = true;
+
     const wsUrl = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000/ws/chat/";
     const ws = new WebSocket(`${wsUrl}${activeConvId}/?token=${token}`);
 
     ws.onopen = () => {
+      if (!isActive) return;
       setIsConnected(true);
       console.log(`Connected to chat: ${activeConvId}`);
     };
 
     ws.onmessage = (event) => {
+      if (!isActive) return;
       const data = JSON.parse(event.data);
       if (data.type === 'message') {
         setMessages((prev) => [...prev, data.message]);
@@ -82,12 +86,14 @@ function ChatClient() {
     };
 
     ws.onclose = () => {
+      if (!isActive) return;
       setIsConnected(false);
     };
 
     setSocket(ws);
 
     return () => {
+      isActive = false;
       ws.close();
     };
   }, [activeConvId]);
@@ -99,10 +105,14 @@ function ChatClient() {
       return;
     }
 
+    let isFetchActive = true;
+
     const fetchHistory = async () => {
       try {
         const res = await api.get(`/chat/conversations/${activeConvId}/messages/`);
         
+        if (!isFetchActive) return;
+
         // Transform the DRF response to match our Message interface
         const history = res.data.map((msg: any) => ({
           id: msg.id,
@@ -114,11 +124,17 @@ function ChatClient() {
 
         setMessages(history);
       } catch (err) {
-        console.error("Failed to fetch history", err);
+        if (isFetchActive) {
+           console.error("Failed to fetch history", err);
+        }
       }
     };
 
     fetchHistory();
+
+    return () => {
+       isFetchActive = false;
+    };
   }, [activeConvId]);
 
   useEffect(() => {
