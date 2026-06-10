@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface User {
   id: string;
@@ -18,24 +19,32 @@ interface AuthState {
   updateUser: (data: Partial<User>) => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
-  isLoading: true, // Initially true while checking local storage/session
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
 
-  login: (user, accessToken, refreshToken) => {
-    localStorage.setItem('access_token', accessToken);
-    localStorage.setItem('refresh_token', refreshToken);
-    set({ user, isAuthenticated: true, isLoading: false });
-  },
+      login: (user, accessToken, refreshToken) => {
+        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem('refresh_token', refreshToken);
+        set({ user, isAuthenticated: true, isLoading: false });
+      },
 
-  logout: () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    set({ user: null, isAuthenticated: false, isLoading: false });
-  },
+      logout: () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        set({ user: null, isAuthenticated: false, isLoading: false });
+      },
 
-  updateUser: (data) => set((state) => ({ 
-    user: state.user ? { ...state.user, ...data } : null 
-  })),
-}));
+      updateUser: (data) => set((state) => ({ 
+        user: state.user ? { ...state.user, ...data } : null 
+      })),
+    }),
+    {
+      name: 'auth-storage', // name of the item in the storage (must be unique)
+      partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
+    }
+  )
+);
