@@ -99,10 +99,10 @@
   }
   body {
     @apply bg-background text-foreground selection:bg-accent/30 selection:text-accent font-sans;
-    cursor: none !important;
+    cursor: url('/star-cursor.svg') 12 12, auto !important;
   }
   a, button, [role="button"], input, select, textarea {
-    cursor: none !important;
+    cursor: url('/star-cursor.svg') 12 12, pointer !important;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif tracking-tight;
