@@ -54,7 +54,7 @@ class PasswordResetView(APIView):
                     f'Hello {user.first_name},\n\nWe received a request to reset your password. '
                     f'Click the link below to set a new password:\n\n{reset_link}\n\n'
                     'If you did not request this, please ignore this email.',
-                    'concierge@rentease.com',
+                    f'RentEase Concierge <{settings.EMAIL_HOST_USER}>',
                     [email],
                     fail_silently=False,
                 )
@@ -104,14 +104,14 @@ class ContactUsView(APIView):
             return Response({'detail': 'All fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Send email to the specified admin address
-        admin_email = 'Abhaynarayan0001@gmail.com'
+        admin_email = settings.EMAIL_HOST_USER
         subject = f"RentEase Inquiry from {name}"
         body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
 
         send_mail(
             subject,
             body,
-            email, # From email
+            f"{name} <{settings.EMAIL_HOST_USER}>", # From email (must be authenticated user for Gmail)
             [admin_email],
             fail_silently=False,
         )
