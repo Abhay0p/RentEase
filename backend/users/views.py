@@ -8,6 +8,7 @@ User = get_user_model()
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
+    authentication_classes = ()
     permission_classes = (AllowAny,)
     serializer_class = UserSerializer
 
@@ -33,6 +34,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.conf import settings
 
 class PasswordResetView(APIView):
+    authentication_classes = ()
     permission_classes = (AllowAny,)
 
     def post(self, request):
@@ -68,6 +70,7 @@ class PasswordResetView(APIView):
             return Response({'detail': 'Password reset link sent to your email.'}, status=status.HTTP_200_OK)
 
 class PasswordResetConfirmView(APIView):
+    authentication_classes = ()
     permission_classes = (AllowAny,)
 
     def post(self, request):
@@ -92,6 +95,7 @@ class PasswordResetConfirmView(APIView):
             return Response({'detail': 'Invalid or expired reset link.'}, status=status.HTTP_400_BAD_REQUEST)
 
 class ContactUsView(APIView):
+    authentication_classes = ()
     permission_classes = (AllowAny,)
 
     def post(self, request):
