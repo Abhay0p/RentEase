@@ -42,7 +42,7 @@ export default function RegisterPage() {
       // Register
       const payload = {
         ...data,
-        role: data.is_host ? "LANDLORD" : "GUEST"
+        role: data.is_host ? "LANDLORD" : "TENANT"
       };
       await api.post("/auth/register/", payload);
       
