@@ -49,9 +49,10 @@ export default function SearchPage() {
         const res = await api.get(`/properties/${queryString}`);
         setProperties(res.data);
         
-        // If properties exist, recenter map on the first one
-        if (res.data.length > 0) {
-          setCenter([res.data[0].latitude, res.data[0].longitude]);
+        // Find the first property that actually has valid coordinates to center the map
+        const firstValidProperty = res.data.find((p: any) => p.latitude != null && p.longitude != null);
+        if (firstValidProperty) {
+          setCenter([firstValidProperty.latitude, firstValidProperty.longitude]);
           setZoom(13);
         }
       } catch (err) {
