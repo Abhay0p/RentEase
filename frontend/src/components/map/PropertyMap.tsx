@@ -3,7 +3,6 @@
 import { useEffect, useMemo } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
 import { Gem } from "lucide-react";
 
 // Component to recenter map when properties change
@@ -25,6 +24,7 @@ export default function PropertyMap({ properties, center, zoom }: PropertyMapPro
   
   // Create luxury marker icon dynamically
   const createCustomIcon = (price: string) => {
+    const L = require("leaflet");
     return L.divIcon({
       className: "custom-luxury-marker",
       html: `
@@ -50,6 +50,9 @@ export default function PropertyMap({ properties, center, zoom }: PropertyMapPro
     });
   };
 
+  // Only render markers for properties that actually have coordinates!
+  const validProperties = properties.filter(p => p.latitude != null && p.longitude != null);
+
   return (
     <MapContainer
       center={center}
@@ -64,11 +67,11 @@ export default function PropertyMap({ properties, center, zoom }: PropertyMapPro
         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
       />
       
-      {properties.map((property) => (
+      {validProperties.map((property) => (
         <Marker 
           key={property.id} 
           position={[property.latitude, property.longitude]}
-          icon={createCustomIcon(Math.round(property.price_per_night).toString())}
+          icon={createCustomIcon(Math.round(property.price_per_night || 0).toString())}
         >
           <Popup className="luxury-popup">
             <div className="font-sans min-w-[200px] p-1">
