@@ -1,0 +1,126 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-plus-jakarta);
+  --font-serif: var(--font-playfair);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-playfair);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+:root {
+  /* LIGHT MODE (Warm Ivory, Luxury Stone) */
+  --background: #FAF8F5;
+  --foreground: #1F2937;
+  --card: #FFFFFF;
+  --card-foreground: #1F2937;
+  --popover: #FFFFFF;
+  --popover-foreground: #1F2937;
+  
+  --primary: #1F2937;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F1ECE6;
+  --secondary-foreground: #1F2937;
+  --accent: #C8A96B;
+  --accent-foreground: #FFFFFF;
+  
+  --muted: #F3F4F6;
+  --muted-foreground: #6B7280;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #E5E7EB;
+  --input: #E5E7EB;
+  --ring: #C8A96B;
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* DARK MODE (Deep Architectural Black) */
+  --background: #0F1115;
+  --foreground: #F5F5F5;
+  --card: #181C24;
+  --card-foreground: #F5F5F5;
+  --popover: #181C24;
+  --popover-foreground: #F5F5F5;
+  
+  --primary: #F5F5F5;
+  --primary-foreground: #0F1115;
+  --secondary: #272A31;
+  --secondary-foreground: #F5F5F5;
+  --accent: #D4B483;
+  --accent-foreground: #0F1115;
+  
+  --muted: #272A31;
+  --muted-foreground: #A1A1AA;
+  --destructive: #EF4444;
+  --destructive-foreground: #F5F5F5;
+  --border: #272A31;
+  --input: #272A31;
+  --ring: #D4B483;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground selection:bg-accent/30 selection:text-accent font-sans;
+    cursor: none !important;
+  }
+  a, button, [role="button"], input, select, textarea {
+    cursor: none !important;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif tracking-tight;
+  }
+}
+
+/* Luxury Material Utilities */
+@layer utilities {
+  .arch-shadow {
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
+  }
+  .dark .arch-shadow {
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.4);
+  }
+  .arch-glass {
+    @apply bg-background/80 backdrop-blur-xl border border-border/50;
+  }
+  .arch-glow {
+    box-shadow: 0 0 30px -5px var(--accent);
+  }
+}
