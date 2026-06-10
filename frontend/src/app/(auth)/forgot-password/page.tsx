@@ -19,6 +19,7 @@ type ForgotFormValues = z.infer<typeof forgotSchema>;
 export default function ForgotPasswordPage() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const [devLink, setDevLink] = useState<string | null>(null);
   
   const { register, handleSubmit, formState: { errors } } = useForm<ForgotFormValues>({
     resolver: zodResolver(forgotSchema),
@@ -28,9 +29,14 @@ export default function ForgotPasswordPage() {
     try {
       setStatus("loading");
       setMessage(null);
-      await api.post("/auth/password-reset/", { email: data.email });
+      const res = await api.post("/auth/password-reset/", { email: data.email });
       setStatus("success");
       setMessage("A recovery link has been sent to your email.");
+      if (res.data.dev_reset_link) {
+        // Extract relative path to work on both localhost and vercel
+        const relative = res.data.dev_reset_link.substring(res.data.dev_reset_link.indexOf('/reset-password'));
+        setDevLink(relative);
+      }
     } catch (err: any) {
       setStatus("error");
       setMessage(err.response?.data?.detail || "Failed to initiate recovery. Please verify your email.");
@@ -67,6 +73,19 @@ export default function ForgotPasswordPage() {
               <p className="text-sm text-muted-foreground font-light leading-relaxed">
                 {message}
               </p>
+              
+              {devLink && (
+                <div className="mt-6 p-4 border border-accent/30 bg-accent/5 rounded-xl text-left">
+                  <p className="text-xs text-accent font-semibold uppercase tracking-wider mb-2">Developer Preview</p>
+                  <p className="text-sm text-muted-foreground font-light mb-4">Skip the email and test the reset flow directly:</p>
+                  <Link href={devLink}>
+                    <PremiumButton className="w-full py-4 text-sm bg-accent text-white border-none shadow-md">
+                      Test Password Reset Flow
+                    </PremiumButton>
+                  </Link>
+                </div>
+              )}
+
               <Link href="/login" className="block mt-8">
                 <PremiumButton className="w-full py-6">Return to Sign In</PremiumButton>
               </Link>
