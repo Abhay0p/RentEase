@@ -1,8 +1,23 @@
+import urllib.request
+import urllib.parse
+import json
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Property, PropertyImage
 from .serializers import PropertySerializer, PropertyImageSerializer
+
+def geocode_address(address):
+    url = f"https://nominatim.openstreetmap.org/search?format=json&q={urllib.parse.quote(address)}"
+    req = urllib.request.Request(url, headers={'User-Agent': 'RentEase/1.0 (contact@rentease.com)'})
+    try:
+        with urllib.request.urlopen(req, timeout=5) as response:
+            data = json.loads(response.read().decode())
+            if data and len(data) > 0:
+                return float(data[0]['lat']), float(data[0]['lon'])
+    except Exception as e:
+        print(f"Geocoding failed for {address}: {e}")
+    return None, None
 
 class IsLandlordOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -46,7 +61,23 @@ class PropertyViewSet(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(landlord=self.request.user)
+        address = serializer.validated_data.get('address', '')
+        lat, lon = geocode_address(address)
+        if lat is not None and lon is not None:
+            serializer.save(landlord=self.request.user, latitude=lat, longitude=lon)
+        else:
+            serializer.save(landlord=self.request.user)
+
+    def perform_update(self, serializer):
+        address = serializer.validated_data.get('address', '')
+        if address:
+            lat, lon = geocode_address(address)
+            if lat is not None and lon is not None:
+                serializer.save(latitude=lat, longitude=lon)
+            else:
+                serializer.save()
+        else:
+            serializer.save()
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def my_properties(self, request):

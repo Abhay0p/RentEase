@@ -44,29 +44,14 @@ export function HostPropertyModal({ isOpen, onClose, onSuccess }: HostPropertyMo
     setError(null);
 
     try {
-      // Try to geocode the address to get real coordinates
-      let lat = 40.7128; // Default NYC
-      let lon = -74.0060;
-      
-      try {
-        const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(formData.address)}`);
-        const geoData = await geoRes.json();
-        if (geoData && geoData.length > 0) {
-          lat = parseFloat(geoData[0].lat);
-          lon = parseFloat(geoData[0].lon);
-        }
-      } catch (geoErr) {
-        console.warn("Geocoding failed, using default coordinates", geoErr);
-      }
-
       const payload = {
         title: formData.title,
         description: formData.description,
         property_type: formData.property_type,
         address: formData.address,
         price_per_night: parseFloat(formData.price_per_night),
-        latitude: lat,
-        longitude: lon,
+        latitude: 0.0,  // Backend will intercept and geocode using Nominatim
+        longitude: 0.0, // Backend will intercept and geocode using Nominatim
         amenities: [`${formData.bedrooms} Bedrooms`, `${formData.bathrooms} Bathrooms`, `Up to ${formData.max_guests} Guests`]
       };
 
