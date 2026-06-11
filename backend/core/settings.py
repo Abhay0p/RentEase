@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'properties',
     'bookings',
     'chat',
+    'platform_admin',
 ]
 
 MIDDLEWARE = [
