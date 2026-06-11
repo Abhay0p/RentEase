@@ -82,4 +82,13 @@ src/
 
 ## 4. WebSocket Lifecycle Management
 - **Chat Connections**: Component `useEffect` hooks manage standard WebSocket connections (`ws://`). 
+- **AI Concierge**: The `ChatConsumer` specifically intercepts the `global` conversation ID. Instead of writing to the DB, it invokes `asyncio.to_thread` to wrap synchronous calls to the `google-genai` SDK, broadcasting the Gemini AI's response asynchronously without blocking other users.
 - **Race Condition Mitigations**: Strict boolean flags (`isActive` / `isFetchActive`) are implemented within `useEffect` cleanup functions. This physically prevents delayed network responses or trailing socket messages from overwriting the React state of newly focused chat rooms, ensuring isolated conversation data.
+
+## 5. API Clients & Interceptors
+- **Axios Instance**: Centralized API client configured in `frontend/src/lib/axios.ts`.
+- **JWT Refresh Interceptor**: A response interceptor actively monitors for `401 Unauthorized` errors. It pauses the failed request, securely retrieves the `refresh_token` from `localStorage`, negotiates a new access token via `/auth/token/refresh/`, and seamlessly replays the original failed request to prevent session drops.
+
+## 6. Geocoding Service
+- **Backend View (`perform_create` & `perform_update`)**: Property creation and updates intercept the raw address string.
+- **Nominatim Utility**: The string is URL-encoded and sent to OpenStreetMap's Nominatim API with strict `User-Agent` headers. The resulting coordinate mapping is saved directly to the database layer before the ModelSerializer commits.

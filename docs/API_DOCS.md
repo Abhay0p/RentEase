@@ -36,5 +36,5 @@
 - `GET /chat/conversations/{id}/messages/`: Retrieve message history for a specific conversation.
 
 ## 7. WebSocket Routing
-- `ws://<domain>/ws/chat/global/`: Connect to the Global Concierge broadcast channel.
+- `ws://<domain>/ws/chat/global/`: Connect to the Global Concierge broadcast channel. Messages are intercepted by Google Gemini AI (gemini-2.5-flash) and replied to asynchronously with a Luxury Concierge persona.
 - `ws://<domain>/ws/chat/{conversation_id}/`: Connect to a secure, private E2E encrypted room.
