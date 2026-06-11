@@ -4,7 +4,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Building2, MessageSquare, Settings, LogOut, Compass, Search, Menu, X, ShieldAlert } from "lucide-react";
+import { Building2, MessageSquare, Settings, LogOut, Compass, Search, Menu, X } from "lucide-react";
 import { ModeToggle } from "@/components/ModeToggle";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -34,10 +34,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: "Discover", icon: Compass, path: "/search" },
     { name: "Preferences", icon: Settings, path: "/dashboard/settings" },
   ];
-
-  if (user?.role === "ADMIN") {
-    menu.push({ name: "Admin Dashboard", icon: ShieldAlert, path: "/dashboard/admin" });
-  }
 
   return (
     <div className="flex h-screen bg-background text-foreground font-sans">
