@@ -75,6 +75,33 @@ class PasswordResetView(APIView):
         except User.DoesNotExist:
             return Response({'detail': 'Password reset link sent to your email.'}, status=status.HTTP_200_OK)
 
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    user = request.user
+    
+    # Handle password update
+    if 'password' in request.data:
+        user.set_password(request.data['password'])
+        
+    # Update other fields
+    serializer = UserSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def make_me_admin(request):
+    """Temporary endpoint to grant admin access on free tiers where shell is unavailable."""
+    user = request.user
+    user.role = 'ADMIN'
+    user.is_staff = True
+    user.is_superuser = True
+    user.save()
+    return Response({"message": "You are now an Admin!"})
+
 class PasswordResetConfirmView(APIView):
     authentication_classes = ()
     permission_classes = (AllowAny,)
