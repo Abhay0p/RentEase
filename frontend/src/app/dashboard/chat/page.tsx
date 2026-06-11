@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, Suspense } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { motion } from "framer-motion";
-import { Send, User as UserIcon, Shield, Search, ArrowLeft } from "lucide-react";
+import { Send, User as UserIcon, Shield, Search, ArrowLeft, Sparkles } from "lucide-react";
 import { PremiumButton } from "@/components/ui/premium-button";
 import { useSearchParams } from "next/navigation";
 import api from "@/lib/axios";
@@ -191,7 +191,10 @@ function ChatClient() {
             </div>
             <div className="flex-1 min-w-0 overflow-hidden">
               <div className="flex justify-between items-baseline mb-1">
-                <h4 className="font-serif text-foreground truncate">Global Concierge</h4>
+                <div className="flex items-center gap-1.5">
+                  <h4 className="font-serif text-foreground truncate">AI Global Concierge</h4>
+                  <Sparkles className="w-3 h-3 text-accent" />
+                </div>
               </div>
               <p className="text-xs text-muted-foreground truncate font-light">Public support channel</p>
             </div>
@@ -255,7 +258,10 @@ function ChatClient() {
                   <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-card ${isConnected ? 'bg-green-500' : 'bg-destructive'}`}></span>
                 </div>
                 <div>
-                  <h2 className="text-xl font-serif text-foreground">Global Concierge</h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-serif text-foreground">AI Global Concierge</h2>
+                    <Sparkles className="w-4 h-4 text-accent animate-pulse" />
+                  </div>
                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
                     {isConnected ? "Connected to Network" : "Reconnecting..."}
                   </p>
@@ -309,7 +315,12 @@ function ChatClient() {
                 )}
                 
                 <div className={`max-w-[70%] ${isMe ? 'items-end' : 'items-start'} flex flex-col`}>
-                  <span className="text-xs text-muted-foreground mb-1 ml-1">{msg.sender_name}</span>
+                  <div className="flex items-center gap-1.5 mb-1 ml-1">
+                    <span className="text-xs text-muted-foreground">{msg.sender_name}</span>
+                    {msg.sender_id === 'ai-concierge' && (
+                      <Sparkles className="w-3 h-3 text-accent" />
+                    )}
+                  </div>
                   <div className={`px-6 py-4 rounded-2xl ${isMe ? 'bg-accent text-white rounded-tr-sm' : 'bg-secondary text-foreground rounded-tl-sm'} shadow-sm`}>
                     <p className="text-sm leading-relaxed">{msg.content}</p>
                   </div>
