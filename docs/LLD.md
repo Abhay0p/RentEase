@@ -7,7 +7,7 @@
 - `id` (UUID, Primary Key)
 - `email` (String, Unique)
 - `password_hash` (String)
-- `role` (Enum: TENANT, LANDLORD, ADMIN)
+- `role` (Enum: TENANT, LANDLORD)
 - `first_name` (String)
 - `last_name` (String)
 - `is_verified` (Boolean)
@@ -66,7 +66,6 @@ src/
 │   │   └── register/page.tsx
 │   ├── (dashboard)/
 │   │   ├── landlord/page.tsx
-│   │   └── admin/page.tsx
 │   ├── properties/
 │   │   ├── [id]/page.tsx
 │   │   └── search/page.tsx
