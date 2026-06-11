@@ -1,9 +1,17 @@
 import json
+import os
+import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import Conversation, Message
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+import google.generativeai as genai
+
+# Configure Gemini AI (this runs once when the module loads)
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
 User = get_user_model()
 
@@ -54,6 +62,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'id': 'global-' + str(timezone.now().timestamp())
                 }
             )
+            
+            # Asynchronously handle the AI response
+            asyncio.create_task(self.handle_ai_response(message))
             return
 
         # Save message to database for real property conversations
@@ -84,6 +95,51 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'timestamp': event.get('created_at')
             }
         }))
+
+    async def handle_ai_response(self, user_message):
+        """Asynchronously call Gemini API and broadcast the response."""
+        # Wait a moment to make it feel like the AI is "typing"
+        await asyncio.sleep(1)
+        
+        system_instruction = (
+            "You are the RentEase Luxury Concierge. "
+            "You provide polite, exclusive, and highly professional assistance "
+            "for high-end real estate and luxury travel inquiries. "
+            "Keep your responses concise, elegant, and helpful. "
+            "Never break character. You do not have access to real-time property data yet."
+        )
+
+        try:
+            if not GEMINI_API_KEY:
+                raise ValueError("API Key not found")
+                
+            # Run the synchronous API call in a separate thread so it doesn't block the WebSocket event loop
+            response_text = await asyncio.to_thread(self._get_gemini_response, system_instruction, user_message)
+            
+        except Exception as e:
+            print(f"Gemini AI Error: {e}")
+            response_text = "Our AI concierge is currently offline or experiencing high demand. Please try again later."
+            
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'chat_message',
+                'message': response_text,
+                'sender_id': 'ai-concierge',
+                'sender_name': 'RentEase Concierge',
+                'created_at': timezone.now().isoformat(),
+                'id': 'ai-' + str(timezone.now().timestamp())
+            }
+        )
+
+    def _get_gemini_response(self, system_instruction, user_message):
+        """Synchronous wrapper for the Gemini API call."""
+        model = genai.GenerativeModel(
+            "gemini-1.5-flash",
+            system_instruction=system_instruction
+        )
+        response = model.generate_content(user_message)
+        return response.text
 
     @database_sync_to_async
     def save_message(self, sender_id, conversation_id, content):
