@@ -8,15 +8,28 @@ from .models import Property, PropertyImage
 from .serializers import PropertySerializer, PropertyImageSerializer
 
 def geocode_address(address):
-    url = f"https://nominatim.openstreetmap.org/search?format=json&q={urllib.parse.quote(address)}"
-    req = urllib.request.Request(url, headers={'User-Agent': 'RentEase/1.0 (contact@rentease.com)'})
-    try:
-        with urllib.request.urlopen(req, timeout=5) as response:
-            data = json.loads(response.read().decode())
-            if data and len(data) > 0:
-                return float(data[0]['lat']), float(data[0]['lon'])
-    except Exception as e:
-        print(f"Geocoding failed for {address}: {e}")
+    # Try the full address, then progressively broader parts
+    parts = [p.strip() for p in address.split(',')]
+    
+    attempts = [address]
+    if len(parts) > 1:
+        # Try without the first part (often a specific street/building name that fails)
+        attempts.append(', '.join(parts[1:]))
+        # Try just the last two parts (usually City, State/Country)
+        if len(parts) > 2:
+            attempts.append(', '.join(parts[-2:]))
+            
+    for attempt in attempts:
+        url = f"https://nominatim.openstreetmap.org/search?format=json&q={urllib.parse.quote(attempt)}"
+        req = urllib.request.Request(url, headers={'User-Agent': 'RentEase/1.0 (contact@rentease.com)'})
+        try:
+            with urllib.request.urlopen(req, timeout=5) as response:
+                data = json.loads(response.read().decode())
+                if data and len(data) > 0:
+                    return float(data[0]['lat']), float(data[0]['lon'])
+        except Exception as e:
+            print(f"Geocoding failed for {attempt}: {e}")
+            
     return None, None
 
 class IsLandlordOrReadOnly(permissions.BasePermission):
