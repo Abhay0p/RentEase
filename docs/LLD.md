@@ -76,3 +76,10 @@ src/
 │   ├── layout/ (Navbar, Footer, Sidebar)
 │   └── property/ (PropertyCard, MapView)
 ```
+
+## 3. State Management (Zustand)
+- **`authStore.ts`**: Uses `persist` middleware configured with `localStorage` to cryptographically store and rehydrate the `user` object and `isAuthenticated` boolean across hard refreshes and page navigations.
+
+## 4. WebSocket Lifecycle Management
+- **Chat Connections**: Component `useEffect` hooks manage standard WebSocket connections (`ws://`). 
+- **Race Condition Mitigations**: Strict boolean flags (`isActive` / `isFetchActive`) are implemented within `useEffect` cleanup functions. This physically prevents delayed network responses or trailing socket messages from overwriting the React state of newly focused chat rooms, ensuring isolated conversation data.

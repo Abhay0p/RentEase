@@ -10,6 +10,7 @@ graph TD
     API <--> DB[(PostgreSQL)]
     API <--> Razorpay[Razorpay API]
     API <--> Cloudinary[Cloudinary API]
+    API <--> Nominatim[OSM Nominatim Geocoding]
     Client <--> Leaflet[Leaflet / OSM]
 ```
 
@@ -23,8 +24,10 @@ graph TD
 ### 2.2. Backend (Django REST Framework)
 - **Authentication:** JWT via `djangorestframework-simplejwt`.
 - **Database ORM:** Django ORM with PostgreSQL.
-- **Real-time:** Django Channels (ASGI) backed by Redis for WebSocket messaging.
+- **Real-time:** Django Channels (ASGI) backed by InMemoryChannelLayer/Redis for WebSocket messaging. Handles asynchronous connections and data broadcasting.
 - **Media Storage:** Integrated with Cloudinary for handling property images.
+- **Geolocation:** Integrates with OpenStreetMap Nominatim API during property creation to geocode user-input addresses to precise lat/lng coordinates.
+- **Email Delivery:** SMTP configured for transactional emails with built-in Render free-tier fallbacks (Console logging and Dev Reset Links) and strict `EMAIL_TIMEOUT` configurations to prevent ASGI worker lockups.
 
 ### 2.3. Infrastructure & Deployment
 - **Frontend Hosting:** Vercel (Edge network, auto-scaling).

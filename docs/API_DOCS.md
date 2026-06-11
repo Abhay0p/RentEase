@@ -6,10 +6,12 @@
 - `POST /auth/register/`: Register a new user (Tenant or Landlord).
 - `POST /auth/login/`: Authenticate user and return JWT tokens.
 - `POST /auth/refresh/`: Refresh JWT access token.
+- `POST /auth/password-reset/`: Generate password reset link and send via email (or return as `dev_reset_link` if SMTP is blocked).
+- `POST /auth/password-reset/confirm/`: Confirm password reset using uid and token.
 
 ## 2. User Endpoints
-- `GET /users/me/`: Retrieve current user profile.
-- `PATCH /users/me/`: Update user profile.
+- `GET /auth/me/`: Retrieve current user profile.
+- `PATCH /auth/me/`: Update user profile.
 
 ## 3. Property Endpoints
 - `GET /properties/`: List all active properties (supports query filters).

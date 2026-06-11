@@ -12,12 +12,13 @@ RentEase is a full-stack SaaS property rental platform designed to connect landl
 - **Admins:** Platform operators managing users, approving listings, and analyzing platform revenue.
 
 ## 3. Core Features
-- **User Authentication:** Role-based access (Tenant, Landlord, Admin) with JWT security and Next.js Zustand global state.
+- **User Authentication:** Role-based access (Tenant, Landlord, Admin) with JWT security and persistent Next.js Zustand global state. Includes secure password recovery flows via email SMTP (with Developer Preview fail-safes).
 - **Property Discovery:** Map-based (Leaflet / OpenStreetMap) and grid-based search with advanced filtering (hotels, villas, pricing, amenities).
 - **Property Management:** Dedicated Landlord dashboard to create listings seamlessly and bypass external Cloudinary presets securely via backend uploading.
 - **Booking System:** Calendar availability, reservation workflows.
 - **Payments:** Secure checkout using Razorpay (Test Mode) and UPI infrastructure logic.
 - **Private Host-Guest Messaging:** Real-time, split-pane WebSocket chat system with isolated E2E channels and a Global Concierge fallback.
+- **Diagnostic Systems:** Robust console logging and asynchronous network timeout handling for debugging cloud environment bottlenecks.
 - **Admin Dashboard:** Platform monitoring, user moderation, and financial analytics.
 
 ## 4. UI/UX Requirements
