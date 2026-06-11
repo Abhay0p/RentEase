@@ -139,7 +139,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def _get_gemini_response(self, system_instruction, user_message):
         """Synchronous wrapper for the Gemini API call."""
         model = genai.GenerativeModel(
-            "gemini-1.5-flash",
+            "gemini-2.5-flash",
             system_instruction=system_instruction
         )
         response = model.generate_content(user_message)
