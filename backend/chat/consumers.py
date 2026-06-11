@@ -110,15 +110,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
         try:
-            if not GEMINI_API_KEY:
-                raise ValueError("API Key not found")
+            api_key = os.getenv("GEMINI_API_KEY")
+            if not api_key:
+                raise ValueError("API Key not found in Render Environment Variables.")
+            
+            # Configure on the fly to ensure it uses the latest key
+            genai.configure(api_key=api_key)
                 
             # Run the synchronous API call in a separate thread so it doesn't block the WebSocket event loop
             response_text = await asyncio.to_thread(self._get_gemini_response, system_instruction, user_message)
             
         except Exception as e:
             print(f"Gemini AI Error: {e}")
-            response_text = "Our AI concierge is currently offline or experiencing high demand. Please try again later."
+            response_text = f"SYSTEM ERROR: {str(e)}"
             
         await self.channel_layer.group_send(
             self.room_group_name,
