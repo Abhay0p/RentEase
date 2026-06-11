@@ -76,7 +76,7 @@ export default function SearchPage() {
     <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden">
       <Navbar />
 
-      <main className="flex-1 flex flex-col md:flex-row mt-20 md:mt-[72px] relative z-10">
+      <main className="flex-1 flex flex-col md:flex-row pt-20 md:pt-[72px] relative z-10 overflow-hidden">
         
         {/* Left Sidebar - Filter & List */}
         <div className="w-full md:w-[45%] lg:w-[40%] flex flex-col h-full bg-background border-r border-border/40 z-20 arch-shadow">
@@ -125,7 +125,7 @@ export default function SearchPage() {
           </div>
 
           {/* Scrollable Property List */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-8 pb-20 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+          <div className="flex-1 overflow-y-auto p-6 space-y-8 pb-32 no-scrollbar">
             {loading ? (
               Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="space-y-4">

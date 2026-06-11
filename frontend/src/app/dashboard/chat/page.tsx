@@ -36,6 +36,7 @@ function ChatClient() {
   const [input, setInput] = useState("");
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [showSidebarOnMobile, setShowSidebarOnMobile] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Fetch Conversations
@@ -166,7 +167,7 @@ function ChatClient() {
     <div className="max-w-7xl mx-auto h-[80vh] flex bg-card border border-border/40 rounded-3xl arch-shadow overflow-hidden">
       
       {/* Sidebar: Conversations List */}
-      <div className="w-1/3 border-r border-border/40 flex flex-col bg-card hidden md:flex">
+      <div className={`w-full md:w-1/3 border-r border-border/40 flex-col bg-card ${showSidebarOnMobile ? 'flex' : 'hidden md:flex'}`}>
         <div className="p-6 border-b border-border/40 bg-secondary/30">
           <h2 className="text-xl font-serif text-foreground mb-4">Messages</h2>
           <div className="relative">
@@ -182,7 +183,7 @@ function ChatClient() {
         <div className="flex-1 overflow-y-auto divide-y divide-border/20">
           {/* Global Concierge Option */}
           <div 
-            onClick={() => setActiveConvId("global")}
+            onClick={() => { setActiveConvId("global"); setShowSidebarOnMobile(false); }}
             className={`p-5 cursor-pointer transition-colors flex gap-4 ${activeConvId === 'global' ? 'bg-secondary/80' : 'hover:bg-secondary/40'}`}
           >
             <div className="w-12 h-12 rounded-full bg-accent/10 border border-accent/20 flex flex-shrink-0 items-center justify-center relative">
@@ -205,7 +206,7 @@ function ChatClient() {
             conversations.map((conv) => (
               <div 
                 key={conv.id}
-                onClick={() => setActiveConvId(conv.id)}
+                onClick={() => { setActiveConvId(conv.id); setShowSidebarOnMobile(false); }}
                 className={`p-5 cursor-pointer transition-colors flex gap-4 ${activeConvId === conv.id ? 'bg-secondary/80 border-l-2 border-accent' : 'hover:bg-secondary/40 border-l-2 border-transparent'}`}
               >
                 <div className="w-12 h-12 rounded-full bg-secondary border border-border flex flex-shrink-0 items-center justify-center overflow-hidden">
@@ -236,11 +237,14 @@ function ChatClient() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col bg-background/50 relative">
+      <div className={`flex-1 flex-col bg-background/50 relative ${showSidebarOnMobile ? 'hidden md:flex' : 'flex'}`}>
         {/* Header */}
         <div className="p-6 border-b border-border/40 bg-secondary/50 flex items-center justify-between z-10">
           <div className="flex items-center gap-4">
-            <div className="md:hidden w-10 h-10 rounded-full flex items-center justify-center bg-card border border-border mr-2 cursor-pointer hover:bg-secondary">
+            <div 
+              onClick={() => setShowSidebarOnMobile(true)}
+              className="md:hidden w-10 h-10 rounded-full flex items-center justify-center bg-card border border-border mr-2 cursor-pointer hover:bg-secondary"
+            >
                <ArrowLeft className="w-4 h-4" />
             </div>
 

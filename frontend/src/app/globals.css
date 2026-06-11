@@ -109,6 +109,17 @@
   }
 }
 
+/* Hide Scrollbar Cross-Browser */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 /* Luxury Material Utilities */
 @layer utilities {
   .arch-shadow {
